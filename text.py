@@ -19,6 +19,7 @@ color_teal = pygame.Color(0, 128, 128)
 color_gray = pygame.Color(128, 128, 128)
 color_orange = pygame.Color(255, 140, 0)
 color_save =  color_light_blue
+color_dark_green = pygame.Color(7, 51, 18)
 
 # Fonts
 largeFont = pygame.font.SysFont("roboto", 70, bold=True)

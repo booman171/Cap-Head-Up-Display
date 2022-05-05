@@ -14,6 +14,7 @@ from time import sleep
 from get_video import VideoGet
 #from bluetooth import *
 import text
+import images
 import cv2
 
 #setup
@@ -46,20 +47,25 @@ GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 source = 0
 #video_getter = VideoGet(source).start()
-background = text.color_black
+background = text.color_dark_green
 
-cam = True
 stream = cv2.VideoCapture(source)
 grabbed, frame = stream.read()
+
+display = 0
+controls = 0
+cam = False
 
 while True:
 	now = datetime.now()
 	screen.fill(background)
 
 	# Time text
-	clock = text.largeFont.render(now.strftime("%I:%M:%S"), False, text.color_red)
-	screen.blit(clock, (40,0))
+	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_red)
+	screen.blit(clock, (150,0))
 	#print("Here")
+
+	screen.blit(images.home, (25, 70))
 
 	if cam:
 		# Displays live camera output on screen
