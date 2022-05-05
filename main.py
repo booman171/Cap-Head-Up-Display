@@ -65,7 +65,7 @@ while True:
 	screen.blit(clock, (150,0))
 	#print("Here")
 
-	screen.blit(images.home, (25, 70))
+	screen.blit(images.home, (25, 50))
 
 	if cam:
 		# Displays live camera output on screen
