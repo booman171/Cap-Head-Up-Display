@@ -16,6 +16,7 @@ from get_video import VideoGet
 import text
 import icons
 import cv2
+from collections import deque
 
 #setup
 #os.putenv('SDL_MOUSEDEV', '/dev/input/mouse')
@@ -47,15 +48,17 @@ GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 source = 0
 #video_getter = VideoGet(source).start()
-background = text.color_dark_green
+background = text.color_green
 
 stream = cv2.VideoCapture(source)
 grabbed, frame = stream.read()
 
-display = 0
+menu = 0
 controls = 0
 cam = False
 
+menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
+main_select = (70, 40)
 while True:
 	now = datetime.now()
 	screen.fill(background)
@@ -65,7 +68,20 @@ while True:
 	screen.blit(clock, (150,0))
 	#print("Here")
 
-	screen.blit(icons.home, (25, 50))
+	if menu == 0:
+		screen.blit(icons.left, (0, 40))
+		screen.blit(icons.right, (140, 40))
+
+		if menu_select[0] == 'home':
+			screen.blit(icons.home, main_select)
+		if menu_select[0] == 'cam':
+			screen.blit(icons.vid, main_select)
+		if menu_select[0] == 'nav':
+			screen.blit(icons.nav, main_select)
+		if menu_select[0] == 'music':
+			screen.blit(icons.music, main_select)
+		if menu_select[0] == 'images':
+			screen.blit(icons.pics, main_select)
 
 	if cam:
 		# Displays live camera output on screen
@@ -84,15 +100,19 @@ while True:
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
 
-	if GPIO.input(12) == False:
-		background = text.color_green
-		time.sleep(0.1)
+	if GPIO.input(16) == False:
+		if menu == 0:
+			menu_select.rotate(1)
+		time.sleep(0.5)
 
 	if GPIO.input(13) == False:
 		background = text.color_orange
-		time.sleep(0.1)
+		time.sleep(0.5)
 
-	if GPIO.input(16) == False:
-		background = text.color_white
-		time.sleep(0.1)
+	if GPIO.input(12) == False:
+		if menu == 0:
+			menu_select.rotate(-1)
+		time.sleep(0.5)
+
+
 
