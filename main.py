@@ -14,7 +14,7 @@ from time import sleep
 from get_video import VideoGet
 #from bluetooth import *
 import text
-import images
+import icons
 import cv2
 
 #setup
@@ -65,7 +65,7 @@ while True:
 	screen.blit(clock, (150,0))
 	#print("Here")
 
-	screen.blit(images.home, (25, 50))
+	screen.blit(icons.home, (25, 50))
 
 	if cam:
 		# Displays live camera output on screen
