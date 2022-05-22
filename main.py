@@ -108,10 +108,13 @@ while True:
 		#pygame.display.update()
 		if GPIO.input(13) == False:
 			if rec == False:
-				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (240, 135))
 				rec = True
 			time.sleep(0.5)
+
+		if rec:
+			video_writer = cv2.VideoWriter_fourcc(*'XVID')
+			video_out = cv2.VideoWriter(filename, video_writer, 25, (240, 135))
+
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
