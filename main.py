@@ -98,7 +98,7 @@ while True:
 		grabbed, frame1 = stream.read()
 		rec_frame = frame1.copy()
 		if rec == True:
-			video_out.write(rec_frame)
+			video_out.write(frame1)
 			print("WRITING")
 		frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
 		frame1 = cv2.flip(frame1, 1)
