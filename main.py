@@ -116,6 +116,7 @@ while True:
 		if GPIO.input(16) == False:
 			if rec == False:
 				background = text.color_red
+				filename = 'video' + timestr + '.avi'
 				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
 				video_out = cv2.VideoWriter(filename, video_writer, 4.0, (width, height))
 				rec = True
@@ -139,7 +140,6 @@ while True:
 	if GPIO.input(13) == False:
 		if menu == 0:
 			if menu_select[0] == 'cam':
-				filename = 'video' + timestr + '.avi'
 				menu = 1
 				cam = True
 		time.sleep(0.5)
