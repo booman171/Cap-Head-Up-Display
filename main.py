@@ -52,6 +52,9 @@ source = 0
 background = text.color_green
 
 stream = cv2.VideoCapture(source)
+# get the final frame size
+width = int(stream.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 menu = 0
 controls = 0
@@ -113,8 +116,8 @@ while True:
 		if GPIO.input(13) == False:
 			if rec == False:
 				background = text.color_red
-				video_writer = cv2.VideoWriter_fourcc('F','M','P','4')
-				video_out = cv2.VideoWriter(filename, video_writer, 25, (480, 640))
+				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
+				video_out = cv2.VideoWriter(filename, video_writer, 20.0, (width, height))
 				rec = True
 			time.sleep(0.5)
 
