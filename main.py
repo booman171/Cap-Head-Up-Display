@@ -97,7 +97,7 @@ while True:
 		# Displays live camera output on screen
 		#frame = video_getter.frame
 		grabbed, frame1 = stream.read()
-		#frame1 = frame.copy()
+		rec_frame = frame1.copy()
 		frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
 		frame1 = cv2.flip(frame1, 1)
 		frame1 = pygame.surfarray.make_surface(frame1)
@@ -110,16 +110,14 @@ while True:
 		if GPIO.input(13) == False:
 			if rec == False:
 				background = text.color_red
+				rec = True
 				video_writer = cv2.VideoWriter_fourcc(*'XVID')
 				video_out = cv2.VideoWriter(filename, video_writer, 25, (240, 135))
-				rec = True
-			if rec:
-				background = text.color_green
-				rec = False
-			time.sleep(0.5)
+			time.sleep(1.0)
 
-		if rec:
-			out.write(frame1)
+
+		if rec == True:
+			video_out.write(rec_frame)
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
