@@ -117,7 +117,7 @@ while True:
 			if rec == False:
 				background = text.color_red
 				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (width, height))
+				video_out = cv2.VideoWriter(filename, video_writer, 7.0, (width, height))
 				rec = True
 			time.sleep(0.5)
 
