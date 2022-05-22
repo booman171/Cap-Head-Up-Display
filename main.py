@@ -16,6 +16,7 @@ from get_video import VideoGet
 import text
 import icons
 import cv2
+import subprocess
 from collections import deque
 
 #setup
@@ -59,6 +60,7 @@ cam = False
 
 menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
 main_select = (70, 40)
+
 while True:
 	now = datetime.now()
 	screen.fill(background)
@@ -67,6 +69,12 @@ while True:
 	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_red)
 	screen.blit(clock, (150,0))
 	#print("Here")
+
+	batt = subprocess.check_output('echo get battery | nc -q 0 127.0.0.1 8423', shell=True)
+	batt = batt.decode("utf-8").split(": ")
+	batt = int(float(batt[1].split("\n")[0]))
+	batt_text = text.medFont.render(str(batt), False, text.color_red)
+	screen.blit(batt_text, (0,0))
 
 	if menu == 0:
 		screen.blit(icons.left, (0, 40))
