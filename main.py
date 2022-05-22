@@ -109,7 +109,7 @@ while True:
 		if GPIO.input(13) == False:
 			if rec == False:
 				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (640, 480))
+				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (240, 135))
 				rec = True
 			time.sleep(0.5)
 
