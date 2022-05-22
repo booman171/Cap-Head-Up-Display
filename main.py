@@ -57,6 +57,7 @@ grabbed, frame = stream.read()
 menu = 0
 controls = 0
 cam = False
+rec = False
 
 menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
 main_select = (70, 40)
@@ -66,6 +67,7 @@ while True:
 	screen.fill(background)
 
 	# Time text
+	timestr = time.strftime("%d%m%Y-%H%M%S")
 	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_red)
 	screen.blit(clock, (150,0))
 	#print("Here")
@@ -73,7 +75,7 @@ while True:
 	batt = subprocess.check_output('echo get battery | nc -q 0 127.0.0.1 8423', shell=True)
 	batt = batt.decode("utf-8").split(": ")
 	batt = int(float(batt[1].split("\n")[0]))
-	batt_text = text.medFont.render(str(batt), False, text.color_red)
+	batt_text = text.medFont.render("Batt: " + str(batt), False, text.color_red)
 	screen.blit(batt_text, (0,0))
 
 	if menu == 0:
@@ -104,6 +106,12 @@ while True:
 		screen.blit(frame1, (10, 20))
 		#screen.blit(frame1, (0,0), (10, 0, 230, 120))
 		#pygame.display.update()
+		if GPIO.input(13) == False:
+			if rec == False:
+				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
+				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (640, 480))
+				rec = True
+			time.sleep(0.5)
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
@@ -114,6 +122,11 @@ while True:
 		time.sleep(0.5)
 
 	if GPIO.input(13) == False:
+		if menu == 0:
+			if menu_select[0] == 'cam':
+				filename = 'video' + timestr + '.avi'
+				menu = 1
+				cam = True
 		background = text.color_orange
 		time.sleep(0.5)
 
