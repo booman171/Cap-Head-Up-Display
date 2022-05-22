@@ -97,6 +97,7 @@ while True:
 		#frame = video_getter.frame
 		grabbed, frame1 = stream.read()
 		rec_frame = frame1.copy()
+		print(f'frame: {frame1.shape}')
 		if rec == True:
 			video_out.write(frame1)
 			print("WRITING")
@@ -113,7 +114,7 @@ while True:
 			if rec == False:
 				background = text.color_red
 				video_writer = cv2.VideoWriter_fourcc('F','M','P','4')
-				video_out = cv2.VideoWriter(filename, video_writer, 25, (220, 115))
+				video_out = cv2.VideoWriter(filename, video_writer, 25, (480, 640))
 				rec = True
 			time.sleep(0.5)
 
