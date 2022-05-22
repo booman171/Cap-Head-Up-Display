@@ -52,7 +52,6 @@ source = 0
 background = text.color_green
 
 stream = cv2.VideoCapture(source)
-grabbed, frame = stream.read()
 
 menu = 0
 controls = 0
@@ -118,6 +117,7 @@ while True:
 
 		if rec == True:
 			video_out.write(rec_frame)
+			print("WRITING")
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
