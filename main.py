@@ -113,13 +113,18 @@ while True:
 		#screen.blit(frame1, (0,0), (10, 0, 230, 120))
 		#pygame.display.update()
 
-		if GPIO.input(13) == False:
+		if GPIO.input(16) == False:
 			if rec == False:
 				background = text.color_red
 				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 3.0, (width, height))
+				video_out = cv2.VideoWriter(filename, video_writer, 4.0, (width, height))
 				rec = True
-			time.sleep(0.5)
+			time.sleep(1.0)
+
+		if GPIO.input(13) == False:
+			if rec:
+				background = text.color_green
+				rec = False
 
 
 
