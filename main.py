@@ -106,15 +106,20 @@ while True:
 		screen.blit(frame1, (10, 20))
 		#screen.blit(frame1, (0,0), (10, 0, 230, 120))
 		#pygame.display.update()
+
 		if GPIO.input(13) == False:
 			if rec == False:
+				background = text.color_red
+				video_writer = cv2.VideoWriter_fourcc(*'XVID')
+				video_out = cv2.VideoWriter(filename, video_writer, 25, (240, 135))
 				rec = True
+			if rec:
+				background = text.color_green
+				rec = False
 			time.sleep(0.5)
 
 		if rec:
-			video_writer = cv2.VideoWriter_fourcc(*'XVID')
-			video_out = cv2.VideoWriter(filename, video_writer, 25, (240, 135))
-
+			out.write(frame1)
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
@@ -130,7 +135,6 @@ while True:
 				filename = 'video' + timestr + '.avi'
 				menu = 1
 				cam = True
-		background = text.color_orange
 		time.sleep(0.5)
 
 	if GPIO.input(12) == False:
