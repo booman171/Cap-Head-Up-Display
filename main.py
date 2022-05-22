@@ -97,6 +97,9 @@ while True:
 		#frame = video_getter.frame
 		grabbed, frame1 = stream.read()
 		rec_frame = frame1.copy()
+		if rec == True:
+			video_out.write(rec_frame)
+			print("WRITING")
 		frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
 		frame1 = cv2.flip(frame1, 1)
 		frame1 = pygame.surfarray.make_surface(frame1)
@@ -115,9 +118,6 @@ while True:
 			time.sleep(0.5)
 
 
-		if rec == True:
-			video_out.write(rec_frame)
-			print("WRITING")
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
