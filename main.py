@@ -70,14 +70,14 @@ while True:
 
 	# Time text
 	timestr = time.strftime("%d%m%Y-%H%M%S")
-	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_red)
+	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_black)
 	screen.blit(clock, (150,0))
 	#print("Here")
 
 	batt = subprocess.check_output('echo get battery | nc -q 0 127.0.0.1 8423', shell=True)
 	batt = batt.decode("utf-8").split(": ")
 	batt = int(float(batt[1].split("\n")[0]))
-	batt_text = text.medFont.render("Batt: " + str(batt), False, text.color_red)
+	batt_text = text.medFont.render("Batt: " + str(batt), False, text.color_black)
 	screen.blit(batt_text, (0,0))
 
 	if menu == 0:
@@ -99,19 +99,18 @@ while True:
 		# Displays live camera output on screen
 		#frame = video_getter.frame
 		grabbed, frame1 = stream.read()
-		rec_frame = frame1.copy()
-		print(f'frame: {frame1.shape}')
 		if rec == True:
 			video_out.write(frame1)
 			print("WRITING")
-		frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
-		frame1 = cv2.flip(frame1, 1)
-		frame1 = pygame.surfarray.make_surface(frame1)
-		#frame1 = pygame.transform.rotate(frame1, 90)
-		frame1 = pygame.transform.scale(frame1, (220, 115))
-		screen.blit(frame1, (10, 20))
-		#screen.blit(frame1, (0,0), (10, 0, 230, 120))
-		#pygame.display.update()
+		if rec == False:
+			frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+			frame1 = cv2.flip(frame1, 1)
+			frame1 = pygame.surfarray.make_surface(frame1)
+			#frame1 = pygame.transform.rotate(frame1, 90)
+			frame1 = pygame.transform.scale(frame1, (220, 115))
+			screen.blit(frame1, (10, 20))
+			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
+			#pygame.display.update()
 
 		if GPIO.input(16) == False:
 			if rec == False:
@@ -126,6 +125,14 @@ while True:
 			if rec:
 				background = text.color_green
 				rec = False
+			time.sleep(1.0)
+
+		if GPIO.input(12) == False:
+			background = text.color_green
+			rec = False
+			cam = False
+			menu = 0
+			time.sleep(1.0)
 
 
 
