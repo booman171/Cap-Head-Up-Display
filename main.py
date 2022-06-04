@@ -71,42 +71,6 @@ rec = False
 menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
 main_select = (70, 40)
 
-# initialize the camera and stream
-camera = PiCamera()
-camera.resolution = (320, 240)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(320, 240))
-stream = camera.capture_continuous(rawCapture, format="bgr",
-	use_video_port=True)
-# allow the camera to warmup and start the FPS counter
-print("[INFO] sampling frames from `picamera` module...")
-time.sleep(2.0)
-fps = FPS().start()
-# loop over some frames
-for (i, f) in enumerate(stream):
-	# grab the frame from the stream and resize it to have a maximum
-	# width of 400 pixels
-	frame = f.array
-	frame = imutils.resize(frame, width=400)
-
-	# clear the stream in preparation for the next frame and update
-	# the FPS counter
-	rawCapture.truncate(0)
-	fps.update()
-	# check to see if the desired number of frames have been reached
-	if i == 20:
-		break
-# stop the timer and display FPS information
-fps.stop()
-print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-# do a bit of cleanup
-cv2.destroyAllWindows()
-stream.close()
-rawCapture.close()
-camera.close()
-
-
 while True:
 	now = datetime.now()
 	screen.fill(background)
@@ -146,43 +110,33 @@ while True:
 		#grabbed, frame1 = stream.read()
 
 		if rec == True:
-			print("WRITING")
-			frame1 = vs.read()
-			fps.update()
-
-			frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
-			frame1 = cv2.flip(frame1, 1)
-			frame1 = pygame.surfarray.make_surface(frame1)
-			frame1 = pygame.transform.rotate(frame1, -90)
-			frame1 = pygame.transform.scale(frame1, (220, 115))
-			screen.blit(frame1, (10, 20))
-			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
-			#pygame.display.update()
+			print("RECORDING")
 
 		if rec == False:
-			print("WRITING")
-			frame1 = vs.read()
-			fps.update()
-			frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
-			frame1 = cv2.flip(frame1, 1)
-			frame1 = pygame.surfarray.make_surface(frame1)
-			frame1 = pygame.transform.rotate(frame1, -90)
-			frame1 = pygame.transform.scale(frame1, (220, 115))
-			screen.blit(frame1, (10, 20))
-			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
-			#pygame.display.update()
+			print("NOT RECORDING")
+
+		frame1 = vs.read()
+		#frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+		#frame1 = cv2.flip(frame1, 1)
+		#frame1 = pygame.surfarray.make_surface(frame1)
+		#frame1 = pygame.transform.rotate(frame1, -90)
+		frame1 = pygame.transform.scale(frame1, (220, 115))
+		screen.blit(frame1, (10, 20))
+		#screen.blit(frame1, (0,0), (10, 0, 230, 120))
+		#pygame.display.update()
 
 
 		if GPIO.input(16) == False:
 			if rec == False:
 				background = text.color_red
-				vs.stop()
-				vs = PiVideoStreamRecord().start_rec()
+				vs.record()
 				rec = True
 			time.sleep(1.0)
 
 		if GPIO.input(13) == False:
 			if rec:
+				background = text.color_yellow
+				vs.stop_record()
 				rec = False
 			time.sleep(1.0)
 
@@ -208,8 +162,6 @@ while True:
 			if menu_select[0] == 'cam':
 				menu = 1
 				vs = PiVideoStreamRecord().start()
-				time.sleep(2.0)
-				fps = FPS().start()
 				cam = True
 		time.sleep(0.5)
 
