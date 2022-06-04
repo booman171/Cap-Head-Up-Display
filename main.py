@@ -19,6 +19,7 @@ import cv2
 import subprocess
 from collections import deque
 from pivideostream import PiVideoStream
+from pivideorecordandstream import PiVideoStreamRecord
 from imutils.video import FPS
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -105,12 +106,6 @@ stream.close()
 rawCapture.close()
 camera.close()
 
-# created a *threaded *video stream, allow the camera sensor to warmup,
-# and start the FPS counter
-print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-time.sleep(2.0)
-fps = FPS().start()
 
 while True:
 	now = datetime.now()
@@ -122,11 +117,13 @@ while True:
 	screen.blit(clock, (150,0))
 	#print("Here")
 
+	'''
 	batt = subprocess.check_output('echo get battery | nc -q 0 127.0.0.1 8423', shell=True)
 	batt = batt.decode("utf-8").split(": ")
 	batt = int(float(batt[1].split("\n")[0]))
 	batt_text = text.medFont.render("Batt: " + str(batt), False, text.color_black)
 	screen.blit(batt_text, (0,0))
+	'''
 
 	if menu == 0:
 		screen.blit(icons.left, (0, 40))
@@ -147,12 +144,12 @@ while True:
 		# Displays live camera output on screen
 		#frame = video_getter.frame
 		#grabbed, frame1 = stream.read()
-		frame1 = vs.read()
 
 		if rec == True:
-			video_out.write(frame1)
 			print("WRITING")
-		if rec == False:
+			frame1 = vs.read()
+			fps.update()
+
 			frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
 			frame1 = cv2.flip(frame1, 1)
 			frame1 = pygame.surfarray.make_surface(frame1)
@@ -162,18 +159,24 @@ while True:
 			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
 			#pygame.display.update()
 
-		if GPIO.input(13) == False:
+
+		if GPIO.input(16) == False:
 			if rec == False:
 				background = text.color_red
-				filename = 'video' + timestr + '.avi'
-				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 5.0, (width, height))
+				# created a *threaded *video stream, allow the camera sensor to warmup,
+				# and start the FPS counter
+				print("[INFO] sampling THREADED frames from `picamera` module...")
+				vs = PiVideoStreamRecord().start()
+				time.sleep(2.0)
+				fps = FPS().start()
 				rec = True
 			time.sleep(1.0)
 
-		if GPIO.input(16) == False:
+		if GPIO.input(13) == False:
 			if rec:
 				background = text.color_green
+				fps.stop()
+				vs.stop()
 				rec = False
 			time.sleep(1.0)
 
@@ -184,7 +187,6 @@ while True:
 			menu = 0
 			time.sleep(1.0)
 
-		fps.update()
 
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
