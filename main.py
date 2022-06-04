@@ -148,7 +148,6 @@ while True:
 		#frame = video_getter.frame
 		#grabbed, frame1 = stream.read()
 		frame1 = vs.read()
-		fps.update()
 
 		if rec == True:
 			video_out.write(frame1)
@@ -185,6 +184,7 @@ while True:
 			menu = 0
 			time.sleep(1.0)
 
+		fps.update()
 
 
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
