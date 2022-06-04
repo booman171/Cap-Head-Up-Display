@@ -38,7 +38,7 @@ class PiVideoStreamRecord:
 		return self.frame
 	def record(self):
 		self.recording = True
-		self.file_name = "viddddddd" + str(time.time()) + ".h264"
+		self.file_name = "video_" + str(time.time()) + ".h264"
 		print("Start recording...")
 		self.camera.start_recording(self.file_name)
 	def stop_record(self):
