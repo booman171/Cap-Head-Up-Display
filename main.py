@@ -11,20 +11,13 @@ from datetime import datetime
 from pygame.locals import *
 import RPi.GPIO as GPIO
 from time import sleep
-from get_video import VideoGet
 #from bluetooth import *
 import text
 import icons
 import cv2
 import subprocess
 from collections import deque
-from pivideostream import PiVideoStream
 from pivideorecordandstream import PiVideoStreamRecord
-from imutils.video import FPS
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import argparse
-import imutils
 
 #setup
 #os.putenv('SDL_MOUSEDEV', '/dev/input/mouse')
