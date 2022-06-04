@@ -59,8 +59,8 @@ background = text.color_green
 
 stream = cv2.VideoCapture(source)
 # get the final frame size
-width = int(stream.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
+width = 320
+height = 240
 
 menu = 0
 controls = 0
