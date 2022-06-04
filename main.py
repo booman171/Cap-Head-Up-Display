@@ -167,7 +167,7 @@ while True:
 				background = text.color_red
 				filename = 'video' + timestr + '.avi'
 				video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-				video_out = cv2.VideoWriter(filename, video_writer, 32.0, (width, height))
+				video_out = cv2.VideoWriter(filename, video_writer, 15.0, (width, height))
 				rec = True
 			time.sleep(1.0)
 
