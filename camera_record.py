@@ -60,21 +60,22 @@ stream.close()
 rawCapture.close()
 camera.close()
 
-# created a *threaded *video stream, allow the camera sensor to warmup,
-# and start the FPS counter
-print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-time.sleep(2.0)
-fps = FPS().start()
+def record_video():
+	# created a *threaded *video stream, allow the camera sensor to warmup,
+	# and start the FPS counter
+	print("[INFO] sampling THREADED frames from `picamera` module...")
+	vs = PiVideoStream().start()
+	time.sleep(2.0)
+	fps = FPS().start()
 
-timestr = time.strftime("%d%m%Y-%H%M%S")
-filename = 'video' + timestr + '.avi'
-video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-video_out = cv2.VideoWriter(filename, video_writer, 32.0, (320, 240))
+	timestr = time.strftime("%d%m%Y-%H%M%S")
+	filename = 'video' + timestr + '.avi'
+	video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
+	video_out = cv2.VideoWriter(filename, video_writer, 32.0, (320, 240))
 
-while True:
-	frame1 = vs.read()
-	video_out.write(frame1)
-	fps.update()
+	while True:
+		frame1 = vs.read()
+		video_out.write(frame1)
+		fps.update()
 
 

@@ -24,7 +24,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import argparse
 import imutils
-import camera_record
+from camera_record import record_video
 from multiprocessing import Process
 
 #setup
@@ -128,8 +128,9 @@ while True:
 
 		if GPIO.input(13) == False:
 			if rec == False:
-				cam_record = Process(target = record_video, args = (record_time, ))
+				cam_record = Process(target = record_video)
 				cam_record.start()
+				rec = True
 			time.sleep(1.0)
 
 		if GPIO.input(16) == False:
@@ -146,9 +147,6 @@ while True:
 			menu = 0
 			time.sleep(1.0)
 
-		fps.update()
-
-
 	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
 
@@ -161,7 +159,6 @@ while True:
 		if menu == 0:
 			if menu_select[0] == 'cam':
 				menu = 1
-				capture.start()
 				cam = True
 		time.sleep(0.5)
 
