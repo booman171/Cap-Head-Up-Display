@@ -1,6 +1,7 @@
 import picamera
 import pygame
 import io
+import time
 
 # Init pygame 
 pygame.init()
@@ -19,13 +20,20 @@ rgb = bytearray(camera.resolution[0] * camera.resolution[1] * 3)
 
 # Main loop
 exitFlag = True
+
+file_name = "viddddddd" + str(time.time()) + ".h264"
+print("Start recording...")
+camera.start_recording(file_name)
+
 while(exitFlag):
     for event in pygame.event.get():
         if(event.type is pygame.MOUSEBUTTONDOWN or 
            event.type is pygame.QUIT):
             exitFlag = False
+            camera.stop_recording()
 
     stream = io.BytesIO()
+
     camera.capture(stream, use_video_port=True, format='rgb')
     stream.seek(0)
     stream.readinto(rgb)

@@ -34,6 +34,11 @@ class PiVideoStreamRecord:
 		Thread(target=self.update, args=()).start()
 		print("uyt")
 		return self
+	def start_rec(self):
+		# start the thread to read frames from the video stream
+		Thread(target=self.update_rec, args=()).start()
+		print("uyt")
+		return self
 	def update(self):
 		# keep looping infinitely until the thread is stopped
 		for f in self.stream:

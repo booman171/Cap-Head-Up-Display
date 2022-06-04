@@ -159,24 +159,30 @@ while True:
 			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
 			#pygame.display.update()
 
+		if rec == False:
+			print("WRITING")
+			frame1 = vs.read()
+			fps.update()
+			frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGB)
+			frame1 = cv2.flip(frame1, 1)
+			frame1 = pygame.surfarray.make_surface(frame1)
+			frame1 = pygame.transform.rotate(frame1, -90)
+			frame1 = pygame.transform.scale(frame1, (220, 115))
+			screen.blit(frame1, (10, 20))
+			#screen.blit(frame1, (0,0), (10, 0, 230, 120))
+			#pygame.display.update()
+
 
 		if GPIO.input(16) == False:
 			if rec == False:
 				background = text.color_red
-				# created a *threaded *video stream, allow the camera sensor to warmup,
-				# and start the FPS counter
-				print("[INFO] sampling THREADED frames from `picamera` module...")
-				vs = PiVideoStreamRecord().start()
-				time.sleep(2.0)
-				fps = FPS().start()
+				vs.stop()
+				vs = PiVideoStreamRecord().start_rec()
 				rec = True
 			time.sleep(1.0)
 
 		if GPIO.input(13) == False:
 			if rec:
-				background = text.color_green
-				fps.stop()
-				vs.stop()
 				rec = False
 			time.sleep(1.0)
 
@@ -201,6 +207,9 @@ while True:
 		if menu == 0:
 			if menu_select[0] == 'cam':
 				menu = 1
+				vs = PiVideoStreamRecord().start()
+				time.sleep(2.0)
+				fps = FPS().start()
 				cam = True
 		time.sleep(0.5)
 
