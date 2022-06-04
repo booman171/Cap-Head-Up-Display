@@ -27,7 +27,7 @@ class PiVideoStreamRecord:
 		self.filename = 'video' + self.timestr + '.avi' # .avi .mp4
 		#self.fps = 15.0
 		self.video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-		self.video_out = cv2.VideoWriter(self.filename, self.video_writer, 32.0, (320, 240))
+		self.video_out = cv2.VideoWriter(self.filename, self.video_writer, 15.0, (320, 240))
 
 	def start(self):
 		# start the thread to read frames from the video stream
