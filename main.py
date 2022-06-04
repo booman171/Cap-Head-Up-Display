@@ -70,6 +70,7 @@ rec = False
 
 menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
 main_select = (70, 40)
+cam_startup = True
 
 while True:
 	now = datetime.now()
@@ -131,21 +132,21 @@ while True:
 				background = text.color_red
 				vs.record()
 				rec = True
-			time.sleep(1.0)
+			time.sleep(0.5)
 
 		if GPIO.input(13) == False:
 			if rec:
 				background = text.color_yellow
 				vs.stop_record()
 				rec = False
-			time.sleep(1.0)
+			time.sleep(0.5)
 
 		if GPIO.input(12) == False:
-			background = text.color_green
-			rec = False
+			#background = text.color_green
+			#rec = False
 			cam = False
 			menu = 0
-			time.sleep(1.0)
+			time.sleep(0.5)
 
 
 
@@ -161,8 +162,11 @@ while True:
 		if menu == 0:
 			if menu_select[0] == 'cam':
 				menu = 1
-				vs = PiVideoStreamRecord().start()
+				if cam_startup == True:
+					vs = PiVideoStreamRecord().start()
+					cam_startup = False
 				cam = True
+				time.sleep(0.5)
 		time.sleep(0.5)
 
 	if GPIO.input(12) == False:
