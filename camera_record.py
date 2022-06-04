@@ -1,83 +1,51 @@
-import pygame
-import threading
-import os
-import time
-import csv
-import math
-import sys, serial, board, busio, glob, argparse, adafruit_lsm9ds1
-import numpy as np
-import datetime as dt
-from datetime import datetime
-from pygame.locals import *
-import RPi.GPIO as GPIO
-from time import sleep
-from get_video import VideoGet
-#from bluetooth import *
-import text
-import icons
 import cv2
-import subprocess
-from collections import deque
-from pivideostream import PiVideoStream
-from imutils.video import FPS
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import argparse
-import imutils
+# Import the video capturing function
+from video_capture import VideoCaptureAsync
+import time
 
-# initialize the camera and stream
-camera = PiCamera()
-camera.resolution = (320, 240)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(320, 240))
-stream = camera.capture_continuous(rawCapture, format="bgr",
-	use_video_port=True)
-# allow the camera to warmup and start the FPS counter
-print("[INFO] sampling frames from `picamera` module...")
-time.sleep(2.0)
-fps = FPS().start()
-# loop over some frames
-for (i, f) in enumerate(stream):
-	# grab the frame from the stream and resize it to have a maximum
-	# width of 400 pixels
-	frame = f.array
-	frame = imutils.resize(frame, width=400)
+#Specify width and height of video to be recorded
+vid_w = 320
+vid_h = 240
+#Intiate Video Capture object
+capture = VideoCaptureAsync(src=0, width=vid_w, height=vid_h)
+#Intiate codec for Video recording object
+fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 
-	# clear the stream in preparation for the next frame and update
-	# the FPS counter
-	rawCapture.truncate(0)
-	fps.update()
-	# check to see if the desired number of frames have been reached
-	if i == 20:
-		break
-# stop the timer and display FPS information
-fps.stop()
-print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-# do a bit of cleanup
-cv2.destroyAllWindows()
-stream.close()
-rawCapture.close()
-camera.close()
-
-print("HERE")
 def record_video(duration):
-	# created a *threaded *video stream, allow the camera sensor to warmup,
-	# and start the FPS counter
-	print("[INFO] sampling THREADED frames from `picamera` module...")
-	vs = PiVideoStream().start()
-	print("HEREEEEE")
-	time.sleep(2.0)
-	fps = FPS().start()
-	timestr = time.strftime("%d%m%Y-%H%M%S")
-	filename = 'video' + timestr + '.avi'
-	video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-	video_out = cv2.VideoWriter(filename, video_writer, 32.0, (320, 240))
+    #start video capture
+    capture.start()
+    time_end = time.time() + duration
 
-	while True:
-		frame1 = vs.read()
-		video_out.write(frame1)
-		fps.update()
-		print("RECORDING")
-		print("_________")
-
+    frames = 0
+    #Create array to hold frames from capture
+    images = []
+    # Capture for duration defined by variable 'duration'
+    while time.time() <= time_end:
+        ret, new_frame = capture.read()
+        frames += 1
+        images.append(new_frame)
+        # Create a full screen video display. Comment the following 2 lines if you have a specific dimension 
+        # of display window in mind and don't mind the window title bar.
+        #cv2.namedWindow('image',cv2.WND_PROP_FULLSCREEN)
+        #cv2.setWindowProperty('image', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        # Here only every 5th frame is shown on the display. Change the '5' to a value suitable to the project. 
+        # The higher the number, the more processing required and the slower it becomes
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    capture.stop()
+    cv2.destroyAllWindows()
+    # The fps variable which counts the number of frames and divides it by 
+    # the duration gives the frames per second which is used to record the video later.
+    fps = frames/duration
+    print(frames)
+    print(fps)
+    print(len(images)) 
+    # The following line initiates the video object and video file named 'video.avi' 
+    # of width and height declared at the beginning.
+    out = cv2.VideoWriter('video.avi', fourcc, fps, (vid_w,vid_h))
+    print("creating video")
+    # The loop goes through the array of images and writes each image to the video file
+    for i in range(len(images)):
+        out.write(images[i])
+    images = []
+    print("Done")
