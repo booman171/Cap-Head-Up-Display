@@ -20,6 +20,7 @@ class PiVideoStream:
 	def start(self):
 		# start the thread to read frames from the video stream
 		Thread(target=self.update, args=()).start()
+		print("uyt")
 		return self
 	def update(self):
 		# keep looping infinitely until the thread is stopped

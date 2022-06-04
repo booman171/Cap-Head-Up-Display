@@ -73,7 +73,7 @@ menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
 main_select = (70, 40)
 
 #capture = VideoCaptureAsync(src=0, width=320, height=240)
-
+record_time = 20
 while True:
 	now = datetime.now()
 	screen.fill(background)
@@ -128,8 +128,9 @@ while True:
 
 		if GPIO.input(13) == False:
 			if rec == False:
-				cam_record = Process(target = record_video)
+				cam_record = Process(target = record_video, args = (record_time, ))
 				cam_record.start()
+				print("Process started")
 				rec = True
 			time.sleep(1.0)
 
