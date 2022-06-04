@@ -2,50 +2,18 @@ import cv2
 # Import the video capturing function
 from video_capture import VideoCaptureAsync
 import time
-
-#Specify width and height of video to be recorded
-vid_w = 320
-vid_h = 240
-#Intiate Video Capture object
-capture = VideoCaptureAsync(src=0, width=vid_w, height=vid_h)
-#Intiate codec for Video recording object
-fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+from picamera import PiCamera
+import time
 
 def record_video(duration):
-    #start video capture
-    capture.start()
-    time_end = time.time() + duration
-
-    frames = 0
-    #Create array to hold frames from capture
-    images = []
-    # Capture for duration defined by variable 'duration'
-    while time.time() <= time_end:
-        ret, new_frame = capture.read()
-        frames += 1
-        images.append(new_frame)
-        # Create a full screen video display. Comment the following 2 lines if you have a specific dimension 
-        # of display window in mind and don't mind the window title bar.
-        #cv2.namedWindow('image',cv2.WND_PROP_FULLSCREEN)
-        #cv2.setWindowProperty('image', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        # Here only every 5th frame is shown on the display. Change the '5' to a value suitable to the project. 
-        # The higher the number, the more processing required and the slower it becomes
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    capture.stop()
-    cv2.destroyAllWindows()
-    # The fps variable which counts the number of frames and divides it by 
-    # the duration gives the frames per second which is used to record the video later.
-    fps = frames/duration
-    print(frames)
-    print(fps)
-    print(len(images)) 
-    # The following line initiates the video object and video file named 'video.avi' 
-    # of width and height declared at the beginning.
-    out = cv2.VideoWriter('video.avi', fourcc, fps, (vid_w,vid_h))
-    print("creating video")
-    # The loop goes through the array of images and writes each image to the video file
-    for i in range(len(images)):
-        out.write(images[i])
-    images = []
-    print("Done")
+	camera = PiCamera()
+	time.sleep(2)
+	camera.resolution = (320, 240)
+	#camera.vflip = True
+	camera.contrast = 10
+	file_name = "vid" + str(time.time()) + ".h264"
+	print("Start recording...")
+	camera.start_recording(file_name)
+	camera.wait_recording(5)
+	camera.stop_recording()
+	print("Done.")
