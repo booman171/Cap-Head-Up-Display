@@ -70,7 +70,7 @@ fps = FPS().start()
 timestr = time.strftime("%d%m%Y-%H%M%S")
 filename = 'video' + timestr + '.avi'
 video_writer = cv2.VideoWriter_fourcc('M','J','P','G')
-video_out = cv2.VideoWriter(filename, video_writer, 5.0, (320, 240))
+video_out = cv2.VideoWriter(filename, video_writer, 32.0, (320, 240))
 
 while True:
 	frame1 = vs.read()
