@@ -34,7 +34,7 @@ pygame.mouse.set_visible(False)
 
 #Pygame and font
 screen = pygame.display.set_mode((240,135))
-font = pygame.font.SysFont("comicsansms", 72)
+font = pygame.font.SysFont("comicsansms", 74)
 
 #More OS stuff
 #os.putenv('SDL_FBDEV', '/dev/fb1')
