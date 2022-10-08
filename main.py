@@ -4,7 +4,7 @@ import os
 import time
 import csv
 import math
-import sys, serial, board, busio, glob, argparse, adafruit_lsm9ds1
+import sys, serial, board, busio, glob, argparse #, adafruit_lsm9ds1
 import numpy as np
 import datetime as dt
 from datetime import datetime
@@ -33,7 +33,7 @@ pygame.display.init()
 pygame.mouse.set_visible(False)
 
 #Pygame and font
-screen = pygame.display.set_mode((240,135))
+screen = pygame.display.set_mode((240,320))
 font = pygame.font.SysFont("comicsansms", 74)
 
 #More OS stuff
@@ -43,8 +43,8 @@ font = pygame.font.SysFont("comicsansms", 74)
 
 # Setup for physical buttons
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(13, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(6, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 source = 0
@@ -53,8 +53,8 @@ background = text.color_green
 
 stream = cv2.VideoCapture(source)
 # get the final frame size
-width = 320
-height = 240
+width = 240
+height = 320
 
 menu = 0
 controls = 0
@@ -62,7 +62,7 @@ cam = False
 rec = False
 
 menu_select = deque(['home', 'cam', 'nav', 'music', 'images'])
-main_select = (70, 40)
+main_select = (70, 100)
 cam_startup = True
 
 while True:
@@ -72,7 +72,7 @@ while True:
 	# Time text
 	timestr = time.strftime("%d%m%Y-%H%M%S")
 	clock = text.medFont.render(now.strftime("%I:%M:%S"), False, text.color_black)
-	screen.blit(clock, (150,0))
+	screen.blit(clock, (0,0))
 	#print("Here")
 
 	'''
@@ -83,9 +83,11 @@ while True:
 	screen.blit(batt_text, (0,0))
 	'''
 
+	up_image = pygame.transform.rotate(icons.left, 270)
+	down_image = pygame.transform.rotate(icons.left, 90)
 	if menu == 0:
-		screen.blit(icons.left, (0, 40))
-		screen.blit(icons.right, (140, 40))
+		screen.blit(up_image, (70, 30))
+		screen.blit(down_image, (70, 170))
 
 		if menu_select[0] == 'home':
 			screen.blit(icons.home, main_select)
@@ -120,21 +122,21 @@ while True:
 		#pygame.display.update()
 
 
-		if GPIO.input(16) == False:
+		if GPIO.input(6) == False:
 			if rec == False:
 				background = text.color_red
 				vs.record()
 				rec = True
 			time.sleep(0.5)
 
-		if GPIO.input(13) == False:
+		if GPIO.input(16) == False:
 			if rec:
 				background = text.color_yellow
 				vs.stop_record()
 				rec = False
 			time.sleep(0.5)
 
-		if GPIO.input(12) == False:
+		if GPIO.input(13) == False:
 			#background = text.color_green
 			#rec = False
 			cam = False
@@ -143,15 +145,15 @@ while True:
 
 
 
-	screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
+	#screen.blit(pygame.transform.flip(screen, True, False), (0, 0))
 	pygame.display.update()
 
-	if GPIO.input(13) == False:
+	if GPIO.input(16) == False:
 		if menu == 0:
 			menu_select.rotate(1)
 		time.sleep(0.5)
 
-	if GPIO.input(16) == False:
+	if GPIO.input(13) == False:
 		if menu == 0:
 			if menu_select[0] == 'cam':
 				menu = 1
@@ -162,7 +164,7 @@ while True:
 				time.sleep(0.5)
 		time.sleep(0.5)
 
-	if GPIO.input(12) == False:
+	if GPIO.input(6) == False:
 		if menu == 0:
 			menu_select.rotate(-1)
 		time.sleep(0.5)
